@@ -29,4 +29,3 @@ old_rasters = load_rasters('C:/Users/CyborgOctopus/ForWarn.2021_X_LC_5YEAR.tar')
 new_rasters = load_rasters('C:/Users/CyborgOctopus/ForWarn_2021_new')
 create_masks(old_rasters)
 create_masks(new_rasters, new=True)
-
