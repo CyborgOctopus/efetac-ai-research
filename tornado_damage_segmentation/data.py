@@ -1,12 +1,23 @@
+import os
+import numpy as np
 import rasterio
-import fiona
 
-# Gets satellite images
-def get_images():
-    image_directory = 'C:/Users/CyborgOctopus/Downloads/ForWarn Data'
+# File paths
+raster_path = 'C:/Users/CyborgOctopus/Downloads/ForWarn_Data'
+mask_path = 'C:/Users/CyborgOctopus/Downloads/ForWarn_Masks'
 
-# Gets masks
+
+# Gets satellite image rasters
+def get_rasters():
+    rasters = []
+    for root, dirs, files in os.walk(raster_path):
+        for file in files:
+            if file[-3:] == 'tif':
+                rasters.append(rasterio.open(os.path.join(root, file)))
+    return rasters
+
+
+# Get masks for satellite image rasters
 def get_masks():
-    path = 'C:/Users/CyborgOctopus/Downloads/extractDamage2016_2021/new10_2163/new10_2163.shp'
-    with fiona.open(path, 'r') as shapefiles:
-        return [feature['geometry'] for feature in shapefiles]
+    for root, dirs, files in os.walk(mask_path):
+        return [rasterio.open(os.path.join(root, file)) for file in files]
