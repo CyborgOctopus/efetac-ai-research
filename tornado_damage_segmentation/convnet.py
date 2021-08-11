@@ -1,6 +1,8 @@
+# TODO implement training/test set separation
 import numpy as np
 import torch
 from torch.nn import functional as F
+from torch.utils.data import DataLoader
 from matplotlib import pyplot as plt
 from tornado_damage_segmentation.data import raster_path, mask_path
 from tornado_damage_segmentation.neural_net import NeuralNet
@@ -13,24 +15,26 @@ num_training_epochs = 10
 test_epoch_period = 2
 model = NeuralNet()
 
-# Load data
-rasters = RasterioDataset(raster_path)
-masks = RasterioDataset(mask_path)
-
 # Split into training and testing sets
 indices = range(len(rasters))
 rng = np.random.default_rng()
 test_set_indices = rng.choice(indices, test_set_size, replace=False)
 training_set_indices = np.delete(indices, test_set_indices)
 
+# Load data
+training_data = RasterioDataset(raster_path, mask_path)
+#test_data =
+training_loader = DataLoader(training_data, batch_size, shuffle=True)
+#test_loader =
+
 
 # Tests the neural network, returning average accuracy
 def test(verbose=False):
     accuracies = []
     for i in test_set_indices:
-        test_raster, test_mask = torch.tensor(rasters[i]), torch.tensor(masks[i])
+        test_raster, test_mask = rasters[i], masks[i]
         output = model(test_raster)
-        accuracies.append(np.average(test_mask = output.argmax(dim=1)))
+        accuracies.append(np.average(test_mask == output.argmax(dim=1)))
         if verbose:
             print(accuracies[-1])
         return np.average(accuracies)

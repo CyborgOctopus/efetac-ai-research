@@ -14,7 +14,6 @@ stormdates = np.array([dt.strptime(feature['properties']['stormdate'], '%Y-%m-%d
 # Create masks for ForWarn rasters
 for raster in get_rasters():
     filename = raster.name.split('/')[-1]
-    # TODO choose mask shapes based on date
     date = dt.strptime(filename.split('.')[1], '%Y%m%d')
     shapes_to_mask = shapes[np.logical_and(date - timedelta(days=183) < stormdates, stormdates < date)]
     # Included to make sure there are actually some shapes that meet the criteria, because otherwise it throws an error
